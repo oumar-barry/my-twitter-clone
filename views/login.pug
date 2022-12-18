@@ -1,0 +1,14 @@
+extends layout/login-layout.pug
+
+block content 
+    .form-wrapper
+        h3 Se connecter 
+        form(method='POST' action='/login')
+            .form-group.mb-3
+                label(for='exampleInputEmail1') Email
+                input#exampleInputEmail1.form-control(type='email' aria-describedby='emailHelp' placeholder='Enter email')
+            .form-group.mb-3
+                label(for='exampleInputPassword1') Mot de passe
+                input#exampleInputPassword1.form-control(type='password' placeholder='Password')
+            .form-group.mt-2
+                input.submit-btn(type='submit' value='login')
