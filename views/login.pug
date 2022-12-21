@@ -3,12 +3,15 @@ extends layout/login-layout.pug
 block content 
     .form-wrapper
         h3 Se connecter 
+        if errMessage
+            .alert.alert-danger(role='alert')
+                span #{errMessage}
         form(method='POST' action='/login')
             .form-group.mb-3
-                label(for='exampleInputEmail1') Email
-                input#exampleInputEmail1.form-control(type='email' aria-describedby='emailHelp' placeholder='Enter email')
+                label(for='exampleInputEmail1') Username or email
+                input#exampleInputEmail1.form-control(type='text' aria-describedby='emailHelp' placeholder='Enter email or username' name='credential')
             .form-group.mb-3
                 label(for='exampleInputPassword1') Mot de passe
-                input#exampleInputPassword1.form-control(type='password' placeholder='Password')
+                input#exampleInputPassword1.form-control(type='password' placeholder='Password' name='password')
             .form-group.mt-2
                 input.submit-btn(type='submit' value='login')

@@ -7,66 +7,71 @@ router.get("/", (req,res,next) => {
 })
 
 router.post("/", async (req,res,next) => {
-    //trim all spaces 
-    for(const key in req.body){
-        if(key.indexOf('password') !== -1 ){
-            req.body[key] = req.body[key].trim()
-        }
-    }
-    
-    const {
-        firstname,
-        lastname,
-        username,
-        email,
-        password,
-        passwordconf
-     } = req.body
-
-     let payload = req.body
-
-     if(firstname && lastname && username && password && passwordconf){
-        //Check if the two passwords match
-        if(password != passwordconf){
-            payload.errMessage = "Les deux mots de passe ne correspondent pas"
-            return res.status(200).render("register",payload)
+    try{
+         //trim all spaces 
+        for(const key in req.body){
+            if(key.indexOf('password') !== -1 ){
+                req.body[key] = req.body[key].trim()
+            }
         }
         
-        
-        // Check if the username or email doesn't exist
-        let  user = User.findOne(
-            $or [
-                {email},
-                {password}
-            ]
-        )
+        const {
+            firstname,
+            lastname,
+            username,
+            email,
+            password,
+            passwordconf
+        } = req.body
 
-        if(!user){
-            try{
-                user = await User.create(req.body)
-                req.session.user = user
-                res.redirect('/')
-            } catch(err){
-                console.log(`${err.errMessage}`)
-                return res.sendStatus(400)
+        let payload = req.body
+        
+        if(firstname && lastname && username && password && passwordconf){
+            //Check if the two passwords match
+            
+            if(password != passwordconf){
+                payload.errMessage = "Les deux mots de passe ne correspondent pas"
+                return res.status(400).render("register",payload)
             }
             
-        } else {
-            if(user.email == email) {
-                payload.errMessage = 'Cette Adresse email existe déjà '
+            
+            let user = await User.findOne({
+                $or: [
+                    {email},
+                    {username}
+                ]
+            })
+
+            if(!user){
+               await User.create(req.body)
+               .then((user) => {
+                    req.session.user = user
+                    return res.redirect("/")
+               })
+                
             } else {
-                payload.errMessage = "Ce Pseudo est déjà utilisé "
+                if(user.email == email) {
+                    payload.errMessage = 'Cette Adresse email existe déjà '
+                } else {
+                    payload.errMessage = "Ce Pseudo est déjà utilisé "
+                }
             }
+
+
+
+        } else {
+            payload.errMessage = "Veuillez remplir tous les champs"
         }
 
+        res.status(200).render("register",payload)
 
 
-     } else {
-        payload.errMessage = "Veuillez remplir tous les champs"
-     }
 
-     res.status(200).render("register",payload)
+    } catch (err) {
+        console.error(err.message)
 
+    }
+   
 })
 
 

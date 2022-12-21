@@ -1,7 +1,7 @@
-exports.auth = (req,res,nex) => {
+exports.auth = (req,res,next) => {
     if(req.session && req.session.user){
-        next()
+        return next()
     } else {
-        res.redirect('/register')
+        return res.redirect('/login')
     }
 }

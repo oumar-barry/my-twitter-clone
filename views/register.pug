@@ -3,24 +3,45 @@ extends layout/login-layout.pug
 block content 
     .form-wrapper
         h3 Créer un compte
-        form(method='POST' action='/register')
+        if errMessage
+            .alert.alert-danger(role='alert')
+                span #{errMessage}
+        form(method='POST' id='register-form' action='/register' onSubmit="event.preventDefault(); validateForm(); " )
             .form-group.mb-3
                 label(for='prenom') Prénom
-                input#prenom.form-control(type='text' aria-describedby='emailHelp' placeholder='' name='firstname')
+                input#prenom.form-control(type='text' aria-describedby='emailHelp' placeholder='' name='firstname' value=firstname )
             .form-group.mb-3
                 label(for='nom') Nom
-                input#nom.form-control(type='text' aria-describedby='emailHelp' placeholder='' name='lastname')
+                input#nom.form-control(type='text' aria-describedby='emailHelp' placeholder='' name='lastname' value=lastname)
             .form-group.mb-3
                 label(for='pseudo') Pseudo
-                input#pseudo.form-control(type='text' aria-describedby='emailHelp' placeholder='' name='username')
+                input#pseudo.form-control(type='text' placeholder='Enter username' name='username' value=username )
             .form-group.mb-3
                 label(for='exampleInputEmail1') Email
-                input#exampleInputEmail1.form-control(type='email' aria-describedby='emailHelp' placeholder='Enter email' name='email')
+                input#exampleInputEmail1.form-control(type='email' aria-describedby='emailHelp' placeholder='Enter email' name='email' value=email )
             .form-group.mb-3
-                label(for='exampleInputPassword1') Mot de passe
-                input#exampleInputPassword1.form-control(type='password' placeholder='Password' name='password')
+                label(for='password') Mot de passe
+                input#password.form-control(type='password' placeholder='Password' name='password' value=password)
             .form-group.mb-3
                 label(for='passwordconf') Confirmer le mot de passe
-                input#passwordconf.form-control(type='password' name='passwordconf' placeholder='')
+                input#passwordconf.form-control(type='password' name='passwordconf' placeholder='' value=passwordconf )
             .form-group.mt-2
                 input.submit-btn(type='submit' value='Créer')
+
+
+    block scripts
+        script.
+            
+           function validateForm(){
+                let form = document.getElementById('register-form')
+                let password = document.getElementById('password').value.trim()
+                let passwordconf = document.getElementById('passwordconf').value.trim()
+
+                if((password && passwordconf) && (password == passwordconf ) ){
+                    console.log('coucou les gars')
+                    form.submit()
+                } else {
+                    alert("Password don't match try again ")
+                }
+                
+           }
